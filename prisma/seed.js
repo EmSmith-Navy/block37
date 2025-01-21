@@ -2,6 +2,9 @@ const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 
 async function main() {
+  // Clear existing data
+  await clearData();
+
   const userData = [
     { name: 'User1', email: 'user1@example.com' },
     { name: 'User2', email: 'user2@example.com' },
@@ -11,15 +14,7 @@ async function main() {
   ];
 
   for (const user of userData) {
-    try {
-      await prisma.user.create({ data: user });
-    } catch (error) {
-      if (error.code === 'P2002') {
-        console.log(`User with email ${user.email} already exists.`);
-      } else {
-        throw error;
-      }
-    }
+    await prisma.user.create({ data: user });
   }
 
   const trackData = Array.from({ length: 20 }, (_, i) => ({
@@ -36,7 +31,7 @@ async function main() {
 
   for (let i = 0; i < 10; i++) {
     const randomUser = allUsers[Math.floor(Math.random() * allUsers.length)];
-    const randomTracks = allTracks.sort(() => 0.5 - Math.random()).slice(0, Math.floor(Math.random() * 5) + 1);
+    const randomTracks = allTracks.sort(() => 0.5 - Math.random()).slice(0, 8);
 
     await prisma.playlist.create({
       data: {
